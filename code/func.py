@@ -2,6 +2,9 @@ import requests
 import ast
 import xml.etree.ElementTree as ET
 from boardgame import *
+from mechanic import *
+from type import *
+from category import *
 
 def GameData(id, urlAPIGame):
 	responseM = requests.get(urlAPIGame + str(id))
@@ -9,29 +12,41 @@ def GameData(id, urlAPIGame):
 	
 	mechanics = []
 	categories = []
+	types = []
 	bg = treeM.find("boardgame")
-	name = bg.find('name').text
+	name = ""
+	
+	
+	for f in bg.findall('name'):
+
+		if 'primary' in f.attrib and f.attrib['primary'] == "true":
+			name = f.text
+			break
+
+	print(name)
+	#name = [f for f in bg.findall('name') if f.attrib['primary']  == True][0]
+	#name = bg.find('name').text
 	age = bg.find('age').text
 	minplayers = bg.find('minplayers').text
 	maxplayers = bg.find('maxplayers').text
 	playingtime = bg.find('playingtime').text
 	image = bg.find('image').text
-
-	print(image)
-
-
-
-
-	typeBoladao = None if bg.find('boardgamesubdomain') is None else bg.find('boardgamesubdomain').text
+	description = None if bg.find('description') is None else bg.find('description').text
+	
+	for type in bg.findall("boardgamesubdomain"):
+		typ = Type(type.attrib['objectid'] , type.text)
+		types.append(typ)
 
 	for mechanic in bg.findall("boardgamemechanic"):
-		mechanics.append(mechanic.text)
+		mech = Mechanic(mechanic.attrib['objectid'] , mechanic.text)
+		mechanics.append(mech)
 
 	for category in bg.findall("boardgamecategory"):
-		categories.append(category.text)
+		cate = Category(category.attrib['objectid'] , category.text)
+		categories.append(cate)
 
-	description = None if bg.find('description') is None else bg.find('description').text
-	return Boardgame(name, id, age, description, minplayers, maxplayers, playingtime, image, typeBoladao, mechanics, categories)
+	
+	return Boardgame(name, id, age, description, minplayers, maxplayers, playingtime, image, types, mechanics, categories)
 
 
 def GamesIOwn(urlAPIOwn, username):
