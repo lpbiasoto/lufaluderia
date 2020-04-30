@@ -39,9 +39,7 @@ def GameData(id, urlAPIGame):
 		categories.append(category.text)
 
 	description = None if bg.find('description') is None else bg.find('description').text
-	#print(name, id, minplayers, maxplayers, playingtime)#, typeBoladao, mechanics[0] if mechanics != [] else None, categories[0] if categories != [] else None)
-	#print(description)
-	return Boardgame(name, id, description, minplayers, maxplayers, playingtime, typeBoladao, mechanics, categories)
+	return Boardgame(name, id, age, description, minplayers, maxplayers, playingtime, typeBoladao, mechanics, categories)
 
 
 def GamesIOwn(urlAPIOwn, username):
