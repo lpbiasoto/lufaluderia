@@ -1,21 +1,7 @@
 import requests
 import ast
 import xml.etree.ElementTree as ET
-
-class Boardgame:
-	def __init__(self, name, id, age, description, minplayers, maxplayers, playingtime, typeBoladao, mechanics, categories):
-		self.name = name
-		self.id = id
-		self.age = age
-		self.description = str(description).replace("'", "''")
-		#self.description = ast.literal_eval(description)
-		self.minplayers = minplayers
-		self.maxplayers = maxplayers
-		self.playingtime = playingtime
-		self.typeBoladao = typeBoladao
-		self.mechanics = mechanics
-		self.categories = categories
-
+from boardgame import *
 
 def GameData(id, urlAPIGame):
 	responseM = requests.get(urlAPIGame + str(id))
@@ -29,6 +15,10 @@ def GameData(id, urlAPIGame):
 	minplayers = bg.find('minplayers').text
 	maxplayers = bg.find('maxplayers').text
 	playingtime = bg.find('playingtime').text
+	image = bg.find('image').text
+
+	print(image)
+
 
 
 
@@ -41,7 +31,7 @@ def GameData(id, urlAPIGame):
 		categories.append(category.text)
 
 	description = None if bg.find('description') is None else bg.find('description').text
-	return Boardgame(name, id, age, description, minplayers, maxplayers, playingtime, typeBoladao, mechanics, categories)
+	return Boardgame(name, id, age, description, minplayers, maxplayers, playingtime, image, typeBoladao, mechanics, categories)
 
 
 def GamesIOwn(urlAPIOwn, username):

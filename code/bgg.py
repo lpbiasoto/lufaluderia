@@ -1,11 +1,11 @@
 from func import *
 from postgreConn import *
+from parameters import *
+from boardgame import *
 import requests
 import xml.etree.ElementTree as ET
 
-urlAPIOwn = "https://www.boardgamegeek.com/xmlapi/collection/"
-urlAPIGame = "https://www.boardgamegeek.com/xmlapi/boardgame/"
-username = "fcarvalho"
+
 
 list = []
 listGames = GamesIOwn(urlAPIOwn, username)
@@ -19,4 +19,4 @@ child = listGames[0]
 id = child.attrib['objectid']
 list.append(GameData(id, urlAPIGame))
 
-insertBG(list[0])
+list[0].save()
