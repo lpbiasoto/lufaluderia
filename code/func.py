@@ -2,12 +2,17 @@ import requests
 import xml.etree.ElementTree as ET
 
 class Boardgame:
-	def __init__(self, name, id, mechanics, typeBoladao):
+	def __init__(self, name, id, age, description, minplayers, maxplayers, playingtime, typeBoladao, mechanics, categories):
 		self.name = name
 		self.id = id
+		self.age = age
+		self.description = description
+		self.minplayers = minplayers
+		self.maxplayers = maxplayers
+		self.playingtime = playingtime
 		self.typeBoladao = typeBoladao
 		self.mechanics = mechanics
-		self.category = []
+		self.categories = categories
 
 
 def GameData(id, urlAPIGame):
@@ -15,17 +20,28 @@ def GameData(id, urlAPIGame):
 	treeM =  ET.ElementTree(ET.fromstring(responseM.content))
 	
 	mechanics = []
+	categories = []
 	bg = treeM.find("boardgame")
 	name = bg.find('name').text
+	age = bg.find('age').text
+	minplayers = bg.find('minplayers').text
+	maxplayers = bg.find('maxplayers').text
+	playingtime = bg.find('playingtime').text
 
-	print(id, bg.find('boardgamesubdomain'))
-	typeBoladao = "" if bg.find('boardgamesubdomain') is None else bg.find('boardgamesubdomain').text
+
+
+	typeBoladao = None if bg.find('boardgamesubdomain') is None else bg.find('boardgamesubdomain').text
 
 	for mechanic in bg.findall("boardgamemechanic"):
 		mechanics.append(mechanic.text)
 
+	for category in bg.findall("boardgamecategory"):
+		categories.append(category.text)
 
-	return Boardgame(name, id, mechanics, typeBoladao)
+	description = None if bg.find('description') is None else bg.find('description').text
+	#print(name, id, minplayers, maxplayers, playingtime)#, typeBoladao, mechanics[0] if mechanics != [] else None, categories[0] if categories != [] else None)
+	#print(description)
+	return Boardgame(name, id, description, minplayers, maxplayers, playingtime, typeBoladao, mechanics, categories)
 
 
 def GamesIOwn(urlAPIOwn, username):
