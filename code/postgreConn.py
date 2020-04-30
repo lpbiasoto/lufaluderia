@@ -1,7 +1,7 @@
 import psycopg2
+from func import *
 
-
-def connect():
+def insertBG(bg):
     """ Connect to the PostgreSQL database server """
     conn = None
     try:
@@ -9,28 +9,30 @@ def connect():
 
         # connect to the PostgreSQL server
         print('Connecting to the PostgreSQL database...')
-        conn = psycopg2.connect("dbname='teste' user='bg' host='192.168.0.109' password='neverlevis'")
-		
+        conn = psycopg2.connect("dbname='lufaluderia' user='bg' host='192.168.0.109' password='neverlevis'")
+
         # create a cursor
         cur = conn.cursor()
-        
-	# execute a statement
-        print('PostgreSQL database version:')
-        cur.execute('SELECT version()')
+        insertCommand =  "INSERT INTO TB_BOARDGAME" \
+            "(idbgg, name, age, description, minplayers, maxplayers, playingtime, image, idbggparent)" \
+            " VALUES (%s, '%s', '%s', '%s', '%s', '%s', '%s', '', NULL )" % (
+            bg.id, bg.name, bg.age, bg.description, bg.minplayers, bg.maxplayers, bg.playingtime)
 
-        # display the PostgreSQL database server version
-        db_version = cur.fetchone()
-        print(db_version)
-       
-	    # close the communication with the PostgreSQL
+        print(insertCommand)
+
+
+
+    	# execute a statement
+        print('PostgreSQL database version:')
+        cur.execute(insertCommand)
+
+        conn.commit()
         cur.close()
+        
     except (Exception, psycopg2.DatabaseError) as error:
+        print('OI')
         print(error)
     finally:
         if conn is not None:
             conn.close()
             print('Database connection closed.')
-
-
-if __name__ == '__main__':
-    connect()

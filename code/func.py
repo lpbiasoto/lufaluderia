@@ -1,4 +1,5 @@
 import requests
+import ast
 import xml.etree.ElementTree as ET
 
 class Boardgame:
@@ -6,7 +7,8 @@ class Boardgame:
 		self.name = name
 		self.id = id
 		self.age = age
-		self.description = description
+		self.description = str(description).replace("'", "''")
+		#self.description = ast.literal_eval(description)
 		self.minplayers = minplayers
 		self.maxplayers = maxplayers
 		self.playingtime = playingtime
